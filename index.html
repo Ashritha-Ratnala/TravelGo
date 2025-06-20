@@ -1,0 +1,196 @@
+<div class="hero-section" style="text-align: center; padding: 4rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div style="background: rgba(255, 255, 255, 0.95); padding: 2rem 3rem; border-radius: 15px; margin: 0 auto; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <h1 style="font-size: 3.5rem; margin-bottom: 1rem; color: #667eea; text-shadow: none;">
+            Welcome to TravelGo
+        </h1>
+        <p style="font-size: 1.3rem; margin-bottom: 2rem; color: #555; text-shadow: none;">
+            Your One-Stop Travel Booking Platform
+        </p>
+       
+            <a href="{{ url_for('register') }}" class="btn" style="font-size: 1.2rem; padding: 15px 30px; margin-right: 1rem; background: #667eea; color: white; border: none;">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary" style="font-size: 1.2rem; padding: 15px 30px; background: #764ba2; color: white; border: none;">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+      
+            <a href="{{ url_for('dashboard') }}" class="btn" style="font-size: 1.2rem; padding: 15px 30px; background: #667eea; color: white; border: none;">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+       
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">
+        <i class="fas fa-star" style="color: #ffd700;"></i> Book Your Next Adventure
+    </h2>
+    
+    <div class="grid">
+        <div class="service-card card">
+            <div class="travel-icon">
+                <i class="fas fa-bus"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; color: #333;">Bus Booking</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">
+                Comfortable and affordable bus travel across India. Choose from luxury coaches to budget-friendly options.
+            </p>
+            
+                <a href="{{ url_for('search', transport_type='bus') }}" class="btn">
+                    <i class="fas fa-search"></i> Search Buses
+                </a>
+           
+                <a href="{{ url_for('login') }}" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Book
+                </a>
+           
+        </div>
+
+        <div class="service-card card">
+            <div class="travel-icon">
+                <i class="fas fa-train"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; color: #333;">Train Booking</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">
+                Experience the charm of train travel. Book tickets for express trains, passenger trains, and luxury services.
+            </p>
+           
+                <a href="{{ url_for('search', transport_type='train') }}" class="btn">
+                    <i class="fas fa-search"></i> Search Trains
+                </a>
+           
+                <a href="{{ url_for('login') }}" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Book
+                </a>
+           
+        </div>
+
+        <div class="service-card card">
+            <div class="travel-icon">
+                <i class="fas fa-plane"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; color: #333;">Flight Booking</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">
+                Fly to your destination quickly and comfortably. Compare prices from major airlines and book instantly.
+            </p>
+         
+                <a href="{{ url_for('search', transport_type='flight') }}" class="btn">
+                    <i class="fas fa-search"></i> Search Flights
+                </a>
+          
+                <a href="{{ url_for('login') }}" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Book
+                </a>
+          
+        </div>
+
+        <div class="service-card card">
+            <div class="travel-icon">
+                <i class="fas fa-hotel"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; color: #333;">Hotel Booking</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">
+                Find the perfect stay for your trip. From luxury resorts to budget accommodations, we have it all.
+            </p>
+            
+                <a href="{{ url_for('search', transport_type='hotel') }}" class="btn">
+                    <i class="fas fa-search"></i> Search Hotels
+                </a>
+          
+                <a href="{{ url_for('login') }}" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Login to Book
+                </a>
+           
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">
+        <i class="fas fa-award" style="color: #667eea;"></i> Why Choose TravelGo?
+    </h2>
+    
+    <div class="grid">
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; color: #667eea; margin-bottom: 1rem;">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem; color: #333;">Secure Booking</h4>
+            <p style="color: #666;">Your payments and personal information are protected with bank-level security.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; color: #667eea; margin-bottom: 1rem;">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem; color: #333;">24/7 Support</h4>
+            <p style="color: #666;">Get help anytime, anywhere. Our customer support team is always ready to assist.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; color: #667eea; margin-bottom: 1rem;">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem; color: #333;">Mobile Friendly</h4>
+            <p style="color: #666;">Book on the go with our responsive design that works perfectly on all devices.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <div style="font-size: 2.5rem; color: #667eea; margin-bottom: 1rem;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem; color: #333;">Real-time Notifications</h4>
+            <p style="color: #666;">Get instant updates about your bookings via email and SMS notifications.</p>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
+    <h2 style="margin-bottom: 1rem;">
+        <i class="fas fa-users"></i> Join Thousands of Happy Travelers
+    </h2>
+    <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
+        Experience hassle-free travel booking with TravelGo. Your journey starts here!
+    </p>
+ 
+        <a href="{{ url_for('register') }}" class="btn" style="background: white; color: #667eea; font-weight: bold;">
+            <i class="fas fa-user-plus"></i> Join TravelGo Today
+        </a>
+    
+</div>
+
+<style>
+    .hero-section {
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .service-card {
+        transition: all 0.3s ease;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+    }
+    
+    .hero-section div {
+        transition: all 0.3s ease;
+    }
+    
+    .hero-section div:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+</style>
+
