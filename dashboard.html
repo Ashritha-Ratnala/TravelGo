@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGo - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-text p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .quick-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            min-width: 100px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: #f8f9fa;
+            color: #666;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .booking-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .booking-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .quick-action {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .upcoming-trips {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .trip-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .trip-date {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 60px;
+            font-size: 0.9rem;
+        }
+
+        .trip-info {
+            flex: 1;
+        }
+
+        .trip-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .trip-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 968px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .quick-stats {
+                justify-content: center;
+            }
+            
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .welcome-text h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .booking-actions {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-plane"></i> TravelGo
+            </a>
+            <div class="nav-links">
+                <a href="/search">Search</a>
+                <a href="/bookings">My Bookings</a>
+                <a href="/dashboard" class="active">Dashboard</a>
+                <a href="/support">Support</a>
+            </div>
+            <div class="user-info">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-avatar">JD</div>
+                <span>John Doe</span>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h1>Welcome back, John!</h1>
+                    <p>Ready for your next adventure? Here's your travel overview.</p>
+                </div>
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Total Trips</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Upcoming</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">₹45,230</span>
+                        <span class="stat-label">Total Spent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="section-header">
+                    <h2 class="section-title">My Bookings</h2>
+                    <a href="/new-booking" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Booking
+                    </a>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="tab-btn active" onclick="filterBookings('all')">All</button>
+                    <button class="tab-btn" onclick="filterBookings('upcoming')">Upcoming</button>
+                    <button class="tab-btn" onclick="filterBookings('completed')">Completed</button>
+                    <button class="tab-btn" onclick="filterBookings('cancelled')">Cancelled</button>
+                </div>
+
+                <!-- Booking Cards -->
+                <div id="bookings-container">
+                    <!-- Flight Booking -->
+                    <div class="booking-card" data-type="flight" data-status="confirmed">
+                        <div class="booking-header">
+                            <div class="booking-type">
+                                <i class="fas fa-plane"></i>
+                                <span>Flight Booking</span>
+                            </div>
+                            <span class="booking-status status-confirmed">Confirmed</span>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Route</span>
+                                <span class="detail-value">Hyderabad → Bangalore</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">July 15, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Time</span>
+                                <span class="detail-value">06:30 AM - 07:45 AM</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Airline</span>
+                                <span class="detail-value">IndiGo 6E-123</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Passenger</span>
+                                <span class="detail-value">John Doe</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Amount</span>
+                                <span class="detail-value">₹4,500</span>
+                            </div>
+                        </div>
+                        <div class="booking-actions">
+                            <a href="/booking/FL123456" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <a href="/download-ticket/FL123456" class="btn btn-secondary">
+                                <i class="fas fa-download"></i> Download Ticket
+                            </a>
+                            <button class="btn btn-danger" onclick="cancelBooking('FL123456')">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hotel Booking -->
+                    <div class="booking-card" data-type="hotel" data-status="confirmed">
+                        <div class="booking-header">
+                            <div class="booking-type">
+                                <i class="fas fa-bed"></i>
+                                <span>Hotel Booking</span>
+                            </div>
+                            <span class="booking-status status-confirmed">Confirmed</span>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Hotel</span>
+                                <span class="detail-value">Grand Hyatt Chennai</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Check-in</span>
+                                <span class="detail-value">July 20, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Check-out</span>
+                                <span class="detail-value">July 23, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Room Type</span>
+                                <span class="detail-value">Deluxe Room</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Guests</span>
+                                <span class="detail-value">2 Adults</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Amount</span>
+                                <span class="detail-value">₹12,000</span>
+                            </div>
+                        </div>
+                        <div class="booking-actions">
+                            <a href="/booking/HT789012" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <a href="/download-voucher/HT789012" class="btn btn-secondary">
+                                <i class="fas fa-download"></i> Download Voucher
+                            </a>
+                            <button class="btn btn-danger" onclick="cancelBooking('HT789012')">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Train Booking -->
+                    <div class="booking-card" data-type="train" data-status="pending">
+                        <div class="booking-header">
+                            <div class="booking-type">
+                                <i class="fas fa-train"></i>
+                                <span>Train Booking</span>
+                            </div>
+                            <span class="booking-status status-pending">Pending</span>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Train</span>
+                                <span class="detail-value">Rajdhani Express (12302)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Route</span>
+                                <span class="detail-value">Delhi → Mumbai</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">August 5, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Class</span>
+                                <span class="detail-value">AC 2-Tier</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Seat</span>
+                                <span class="detail-value">A1-23, A1-24</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Amount</span>
+                                <span class="detail-value">₹3,240</span>
+                            </div>
+                        </div>
+                        <div class="booking-actions">
+                            <a href="/booking/TR345678" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-clock"></i> Waiting Confirmation
+                            </button>
+                            <button class="btn btn-danger" onclick="cancelBooking('TR345678')">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bus Booking -->
+                    <div class="booking-card" data-type="bus" data-status="cancelled">
+                        <div class="booking-header">
+                            <div class="booking-type">
+                                <i class="fas fa-bus"></i>
+                                <span>Bus Booking</span>
+                            </div>
+                            <span class="booking-status status-cancelled">Cancelled</span>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Operator</span>
+                                <span class="detail-value">Volvo Multi-Axle</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Route</span>
+                                <span class="detail-value">Bangalore → Chennai</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">June 10, 2025</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Departure</span>
+                                <span class="detail-value">11:30 PM</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Seat</span>
+                                <span class="detail-value">A1, A2</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Refund</span>
+                                <span class="detail-value">₹1,800</span>
+                            </div>
+                        </div>
+                        <div class="booking-actions">
+                            <a href="/booking/BS901234" class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-ban"></i> Cancelled
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Quick Actions -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Quick Actions</h3>
+                    <a href="/search/flights" class="quick-action">
+                        <i class="fas fa-plane"></i> Book Flight
+                    </a>
+                    <a href="/search/hotels" class="quick-action">
+                        <i class="fas fa-bed"></i> Book Hotel
+                    </a>
+                    <a href="/search/trains" class="quick-action">
+                        <i class="fas fa-train"></i> Book Train
+                    </a>
+                    <a href="/search/buses" class="quick-action">
+                        <i class="fas fa-bus"></i> Book Bus
+                    </a>
+                </div>
+
+                <!-- Upcoming Trips -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Upcoming Trips</h3>
+                    <div class="upcoming-trips">
+                        <div class="trip-item">
+                            <div class="trip-date">
+                                <div>Jul</div>
+                                <div>15</div>
+                            </div>
+                            <div class="trip-info">
+                                <div class="trip-title">Hyderabad → Bangalore</div>
+                                <div class="trip-subtitle">IndiGo Flight</div>
+                            </div>
+                        </div>
+                        <div class="trip-item">
+                            <div class="trip-date">
+                                <div>Jul</div>
+                                <div>20</div>
+                            </div>
+                            <div class="trip-info">
+                                <div class="trip-title">Grand Hyatt Chennai</div>
+                                <div class="trip-subtitle">3 Nights Stay</div>
+                            </div>
+                        </div>
+                        <div class="trip-item">
+                            <div class="trip-date">
+                                <div>Aug</div>
+                                <div>05</div>
+                            </div>
+                            <div class="trip-info">
+                                <div class="trip-title">Delhi → Mumbai</div>
+                                <div class="trip-subtitle">Rajdhani Express</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Section -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Need Help?</h3>
+                    <a href="/support" class="quick-action">
+                        <i class="fas fa-headset"></i> Contact Support
+                    </a>
+                    <a href="/faq" class="quick-action">
+                        <i class="fas fa-question-circle"></i> FAQ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter bookings functionality
+        function filterBookings(type) {
+            const cards = document.querySelectorAll('.booking-card');
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter cards
+            cards.forEach(card => {
+                if (type === 'all') {
+                    card.style.display = 'block';
+                } else if (type === 'upcoming') {
+                    const status = card.dataset.status;
+                    card.style.display = (status === 'confirmed' || status === 'pending') ? 'block' : 'none';
+                } else if (type === 'completed') {
+                    // You can implement this based on your logic
+                    card.style.display = 'none';
+                } else if (type === 'cancelled') {
+                    const status = card.dataset.status;
+                    card.style.display = status === 'cancelled' ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Cancel booking functionality
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                // Here you would typically make an AJAX call to your Flask backend
+                fetch(`/cancel-booking/${bookingId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        booking_id: bookingId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Booking cancelled successfully!');
+                        location.reload(); // Reload to show updated status
+                    } else {
+                        alert('Failed to cancel booking. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+            }
+        }
+
+        // Add some interactivity to cards
+        document.querySelectorAll('.booking-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Notification bell click
+        document.querySelector('.notification-bell').addEventListener('click', function() {
+            alert('You have 3 new notifications:\n\n1. Flight booking confirmed\n2. Hotel booking reminder\n3. New travel offers available');
+        });
+
+        // Auto-refresh data every 30 seconds (for real-time updates)
+        setInterval(function() {
+            // This woul
