@@ -4,7 +4,7 @@ import uuid
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-
+# Local user store (simulated)
 users = {}
 bookings = []
 
@@ -71,7 +71,7 @@ def book():
 
     return render_template('booking.html')
 
-
+# 🟢 NEW: Handle "search" requests
 @app.route('/search/<transport_type>')
 def search(transport_type):
     return f"<h2>Showing available {transport_type.title()} options...</h2><p>(You can implement filters and results here later.)</p>"
