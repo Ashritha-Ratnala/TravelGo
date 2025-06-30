@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelGo - Your Ultimate Travel Booking Platform</title>
+    <title>Welcome to TravelGo - Your Ultimate Travel Booking Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -48,6 +48,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -65,6 +66,26 @@
 
         .nav-links a:hover {
             color: #667eea;
+        }
+
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
         }
 
         .auth-buttons {
@@ -110,131 +131,166 @@
             padding: 8rem 2rem 4rem;
             text-align: center;
             color: white;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%),
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            background-attachment: fixed;
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
+        .welcome-message {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
             opacity: 0.9;
+            line-height: 1.8;
         }
 
-        /* Search Container */
-        .search-container {
+        .cta-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Travel Gallery Section */
+        .travel-gallery {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-title {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 1000px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 0.5rem;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            background: transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #666;
+            overflow: hidden;
             transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            font-size: 4rem;
             color: white;
-            transform: translateY(-2px);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
-        .search-form {
-            display: none;
+        .gallery-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
         }
 
-        .search-form.active {
-            display: block;
+        .gallery-image.mountain {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+        .gallery-image.beach {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+        }
+
+        .gallery-image.city {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+        }
+
+        .gallery-image.nature {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+        }
+
+        
+
+        .gallery-content {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .gallery-content h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
             color: #333;
         }
 
-        .form-group input,
-        .form-group select {
-            padding: 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .search-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        .gallery-content p {
+            color: #666;
+            line-height: 1.6;
         }
 
         /* Features Section */
         .features {
             padding: 4rem 2rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)),
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            background-attachment: fixed;
             backdrop-filter: blur(10px);
         }
 
@@ -248,6 +304,7 @@
             color: white;
             font-size: 2.5rem;
             margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .features-grid {
@@ -286,57 +343,9 @@
             line-height: 1.6;
         }
 
-        /* Services Section */
-        .services {
-            padding: 4rem 2rem;
-            color: white;
-        }
-
-        .services-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .services h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .service-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .service-item h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-        }
-
         /* Footer */
         .footer {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
             padding: 3rem 2rem 1rem;
             text-align: center;
@@ -390,25 +399,24 @@
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
 
-            .search-tabs {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
+            .welcome-message {
+                font-size: 1.2rem;
             }
 
             .hero {
                 padding: 6rem 1rem 2rem;
             }
 
-            .search-container {
-                margin: 1rem;
-                padding: 1.5rem;
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .user-welcome span {
+                display: none;
             }
         }
 
@@ -428,26 +436,56 @@
             animation: fadeInUp 0.8s ease-out;
         }
 
-        /* Loading animation */
-        .loading {
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
             display: none;
-            justify-content: center;
-            align-items: center;
-            margin-top: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
         }
 
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                display: flex;
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem 0;
+            }
         }
     </style>
 </head>
@@ -455,20 +493,29 @@
     <!-- Header -->
     <header class="header">
         <div class="nav-container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <i class="fas fa-plane"></i> TravelGo
-            </div>
+            </a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#services">Services</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
                     <li><a href="#features">Features</a></li>
-                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
-            <div class="auth-buttons">
-                <a href="login.html" class="btn btn-secondary">Login</a>
-                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-welcome" id="userSection">
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+              <span id="welcomeText">Welcome, {{ session.get('user_name', 'Guest') }}!</span>
+
+            </div>
+            <div class="auth-buttons" id="authButtons">
+                <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Sign Up</a>
             </div>
         </div>
     </header>
@@ -476,146 +523,59 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content fade-in-up">
-            <h1>Your Journey Starts Here</h1>
-            <p>Book buses, trains, flights, and hotels all in one place. Experience seamless travel booking with real-time notifications and dynamic seat selection.</p>
+            <div class="welcome-message floating">
+                <i class="fas fa-globe-americas"></i> Welcome to TravelGo
+            </div>
+            <h1>Your Journey Awaits</h1>
+            <p>Experience the world's most comprehensive travel booking platform. From planning your dream vacation to booking last-minute getaways, we make travel simple, secure, and memorable.</p>
+            <a href="{{ url_for('login') }}" class="cta-button">
+                <i class="fas fa-rocket"></i>
+                Start Your Journey
+            </a>
         </div>
+    </section>
 
-        <!-- Search Container -->
-        <div class="search-container fade-in-up">
-            <div class="search-tabs">
-                <button class="tab-btn active" data-tab="bus">
-                    <i class="fas fa-bus"></i> Bus
-                </button>
-                <button class="tab-btn" data-tab="train">
-                    <i class="fas fa-train"></i> Train
-                </button>
-                <button class="tab-btn" data-tab="flight">
-                    <i class="fas fa-plane"></i> Flight
-                </button>
-                <button class="tab-btn" data-tab="hotel">
-                    <i class="fas fa-hotel"></i> Hotel
-                </button>
+    <!-- Travel Gallery Section -->
+    <section class="travel-gallery">
+        <h2 class="gallery-title">Explore Amazing Destinations</h2>
+        <div class="gallery-grid">
+            <div class="gallery-card fade-in-up">
+                <div class="gallery-image mountain">
+                    <i class="fas fa-mountain"></i>
+                </div>
+                <div class="gallery-content">
+                    <h3>Mountain Adventures</h3>
+                    <p>Discover breathtaking mountain ranges and scenic routes. Perfect for nature lovers and adventure seekers looking for unforgettable experiences.</p>
+                </div>
             </div>
-
-            <!-- Bus Search Form -->
-            <form class="search-form active" id="bus-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="bus-from">From</label>
-                        <input type="text" id="bus-from" name="from" placeholder="Departure City" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus-to">To</label>
-                        <input type="text" id="bus-to" name="to" placeholder="Destination City" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus-date">Travel Date</label>
-                        <input type="date" id="bus-date" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bus-passengers">Passengers</label>
-                        <select id="bus-passengers" name="passengers">
-                            <option value="1">1 Passenger</option>
-                            <option value="2">2 Passengers</option>
-                            <option value="3">3 Passengers</option>
-                            <option value="4">4+ Passengers</option>
-                        </select>
-                    </div>
+            <div class="gallery-card fade-in-up">
+                <div class="gallery-image beach">
+                    <i class="fas fa-water"></i>
                 </div>
-                <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Search Buses
-                </button>
-            </form>
-
-            <!-- Train Search Form -->
-            <form class="search-form" id="train-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="train-from">From</label>
-                        <input type="text" id="train-from" name="from" placeholder="Departure Station" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train-to">To</label>
-                        <input type="text" id="train-to" name="to" placeholder="Destination Station" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train-date">Travel Date</label>
-                        <input type="date" id="train-date" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="train-class">Class</label>
-                        <select id="train-class" name="class">
-                            <option value="sleeper">Sleeper</option>
-                            <option value="3ac">3 AC</option>
-                            <option value="2ac">2 AC</option>
-                            <option value="1ac">1 AC</option>
-                        </select>
-                    </div>
+                <div class="gallery-content">
+                    <h3>Beach Getaways</h3>
+                    <p>Relax on pristine beaches and enjoy crystal-clear waters. From tropical paradises to coastal escapes, find your perfect beach destination.</p>
                 </div>
-                <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Search Trains
-                </button>
-            </form>
-
-            <!-- Flight Search Form -->
-            <form class="search-form" id="flight-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="flight-from">From</label>
-                        <input type="text" id="flight-from" name="from" placeholder="Departure Airport" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="flight-to">To</label>
-                        <input type="text" id="flight-to" name="to" placeholder="Destination Airport" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="flight-departure">Departure</label>
-                        <input type="date" id="flight-departure" name="departure" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="flight-return">Return (Optional)</label>
-                        <input type="date" id="flight-return" name="return">
-                    </div>
-                </div>
-                <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Search Flights
-                </button>
-            </form>
-
-            <!-- Hotel Search Form -->
-            <form class="search-form" id="hotel-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="hotel-city">City</label>
-                        <input type="text" id="hotel-city" name="city" placeholder="Destination City" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hotel-checkin">Check-in</label>
-                        <input type="date" id="hotel-checkin" name="checkin" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hotel-checkout">Check-out</label>
-                        <input type="date" id="hotel-checkout" name="checkout" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hotel-type">Type</label>
-                        <select id="hotel-type" name="type">
-                            <option value="budget">Budget</option>
-                            <option value="standard">Standard</option>
-                            <option value="luxury">Luxury</option>
-                            <option value="premium">Premium</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Search Hotels
-                </button>
-            </form>
-
-            <div class="loading">
-                <div class="spinner"></div>
-                <span style="margin-left: 10px;">Searching...</span>
             </div>
+            <div class="gallery-card fade-in-up">
+                <div class="gallery-image city">
+                    <i class="fas fa-city"></i>
+                </div>
+                <div class="gallery-content">
+                    <h3>City Breaks</h3>
+                    <p>Explore vibrant cities filled with culture, history, and modern attractions. Discover urban adventures and metropolitan experiences.</p>
+                </div>
+            </div>
+            <div class="gallery-card fade-in-up">
+                <div class="gallery-image nature">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="gallery-content">
+                    <h3>Nature Escapes</h3>
+                    <p>Immerse yourself in natural wonders and wildlife sanctuaries. Perfect for eco-tourism and sustainable travel experiences.</p>
+                </div>
+            </div>
+            
         </div>
     </section>
 
@@ -670,45 +630,8 @@
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section class="services" id="services">
-        <div class="services-container">
-            <h2>Our Services</h2>
-            <div class="services-grid">
-                <div class="service-item">
-                    <div class="service-icon">
-                        <i class="fas fa-bus"></i>
-                    </div>
-                    <h3>Bus Booking</h3>
-                    <p>Comfortable bus journeys with dynamic seat selection and real-time availability.</p>
-                </div>
-                <div class="service-item">
-                    <div class="service-icon">
-                        <i class="fas fa-train"></i>
-                    </div>
-                    <h3>Train Reservations</h3>
-                    <p>Book train tickets across multiple classes with instant confirmation.</p>
-                </div>
-                <div class="service-item">
-                    <div class="service-icon">
-                        <i class="fas fa-plane"></i>
-                    </div>
-                    <h3>Flight Booking</h3>
-                    <p>Domestic and international flights with competitive prices and flexible options.</p>
-                </div>
-                <div class="service-item">
-                    <div class="service-icon">
-                        <i class="fas fa-hotel"></i>
-                    </div>
-                    <h3>Hotel Booking</h3>
-                    <p>From budget stays to luxury hotels, find accommodations that match your preferences.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
-    <footer class="footer" id="contact">
+    <footer class="footer">
         <div class="footer-content">
             <div class="footer-grid">
                 <div class="footer-section">
@@ -718,27 +641,18 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="/bookings">My Bookings</a></li>
-                        <li><a href="/profile">Profile</a></li>
-                        <li><a href="/support">Support</a></li>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}">Register</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Services</h3>
                     <ul>
-                        <li><a href="bus.html">Bus Booking</a></li>
-                        <li><a href="train.html">Train Booking</a></li>
-                        <li><a href="flight.html">Flight Booking</a></li>
-                        <li><a href="hotel.html">Hotel Booking</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact Info</h3>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> support@travelgo.com</li>
-                        <li><i class="fas fa-phone"></i> +91-9876543210</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Hyderabad, India</li>
+                        <li><a href="{{ url_for('bus_booking') }}">Bus Booking</a></li>
+                        <li><a href="{{ url_for('train_booking') }}">Train Booking</a></li>
+                        <li><a href="{{ url_for('flight_booking') }}">Flight Booking</a></li>
+                        <li><a href="{{ url_for('hotel_booking') }}">Hotel Booking</a></li>
                     </ul>
                 </div>
             </div>
@@ -749,53 +663,52 @@
     </footer>
 
     <script>
-        // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all tabs and forms
-                document.querySelectorAll('.tab-btn').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.search-form').forEach(form => form.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                btn.classList.add('active');
-                
-                // Show corresponding form
-                const tabId = btn.getAttribute('data-tab');
-                document.getElementById(`${tabId}-form`).classList.add('active');
-            });
+        // User session simulation
+        function checkUserSession() {
+            // This would normally check your actual session/authentication
+            // Using JavaScript variables instead of localStorage for compatibility
+            const user = null; // Replace with your session check logic
+            const userSection = document.getElementById('userSection');
+            const authButtons = document.getElementById('authButtons');
+            const welcomeText = document.getElementById('welcomeText');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (user) {
+                const firstName = user.firstName || user.name || 'User';
+                welcomeText.textContent = `Welcome, ${firstName}!`;
+                userAvatar.innerHTML = firstName.charAt(0).toUpperCase();
+                userSection.style.display = 'flex';
+                authButtons.style.display = 'none';
+            } else {
+                userSection.style.display = 'none';
+                authButtons.style.display = 'flex';
+            }
+        }
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
         });
 
-        // Form submission handlers
-        document.querySelectorAll('.search-form').forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Show loading animation
-                const loading = document.querySelector('.loading');
-                loading.style.display = 'flex';
-                
-                // Get form data
-                const formData = new FormData(form);
-                const formType = form.id.replace('-form', '');
-                
-                // Simulate API call
-                setTimeout(() => {
-                    loading.style.display = 'none';
-                    
-                    // In a real application, you would send this data to your Flask backend
-                    const searchData = Object.fromEntries(formData);
-                    console.log(`Searching for ${formType}:`, searchData);
-                    
-                    // Redirect to results page (you would implement this route in Flask)
-                    window.location.href = `/search/${formType}?${new URLSearchParams(searchData).toString()}`;
-                }, 2000);
-            });
-        });
-
-        // Set minimum date to today
-        const today = new Date().toISOString().split('T')[0];
-        document.querySelectorAll('input[type="date"]').forEach(input => {
-            input.setAttribute('min', today);
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
         });
 
         // Smooth scrolling for navigation links
@@ -827,34 +740,38 @@
         }, observerOptions);
 
         // Observe elements for animation
-        document.querySelectorAll('.feature-card, .service-item').forEach(el => {
+        document.querySelectorAll('.feature-card, .gallery-card').forEach(el => {
             observer.observe(el);
         });
 
-        // Auto-populate return date for flights (next day)
-        document.getElementById('flight-departure').addEventListener('change', function() {
-            const departureDate = new Date(this.value);
-            const returnDate = new Date(departureDate);
-            returnDate.setDate(returnDate.getDate() + 1);
+        // Add hover effects
+        document.querySelectorAll('.gallery-card, .feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
             
-            const returnInput = document.getElementById('flight-return');
-            if (!returnInput.value) {
-                returnInput.value = returnDate.toISOString().split('T')[0];
-            }
-            returnInput.setAttribute('min', returnDate.toISOString().split('T')[0]);
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
         });
 
-        // Auto-populate checkout date for hotels (next day)
-        document.getElementById('hotel-checkin').addEventListener('change', function() {
-            const checkinDate = new Date(this.value);
-            const checkoutDate = new Date(checkinDate);
-            checkoutDate.setDate(checkoutDate.getDate() + 1);
-            
-            const checkoutInput = document.getElementById('hotel-checkout');
-            if (!checkoutInput.value) {
-                checkoutInput.value = checkoutDate.toISOString().split('T')[0];
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUserSession();
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.2;
+            const hero = document.querySelector('.hero');
+            const features = document.querySelector('.features');
+            if (hero) {
+                hero.style.transform = `translateY(${rate}px)`;
             }
-            checkoutInput.setAttribute('min', checkoutDate.toISOString().split('T')[0]);
+            if (features) {
+                features.style.transform = `translateY(${rate * 0.5}px)`;
+            }
         });
     </script>
 </body>
