@@ -606,27 +606,6 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <i class="fas fa-bed"></i> TravelGo
-            </a>
-            <ul class="nav-links">
-                <li><a href="/buses">Buses</a></li>
-                <li><a href="/trains">Trains</a></li>
-                <li><a href="/flights">Flights</a></li>
-                <li><a href="/hotels" class="active">Hotels</a></li>
-                <li><a href="/dashboard">Dashboard</a></li>
-            </ul>
-            <div class="user-info">
-                <span>Welcome, User</span>
-                <a href="/logout" style="color: #ff6b6b;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
 
     <div class="container">
         <!-- Page Header -->
@@ -685,77 +664,7 @@
             </form>
         </div>
 
-        <!-- Filters Section -->
-        <div class="filters-section" id="filters-section">
-            <div class="filters-header">
-                <h3>Filter Results</h3>
-                <button onclick="clearFilters()" style="background: none; border: none; color: #ff6b6b; cursor: pointer;">
-                    <i class="fas fa-times"></i> Clear All
-                </button>
-            </div>
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label>Price Range</label>
-                    <div class="price-range">
-                        <span>₹0</span>
-                        <input type="range" id="price-range" min="0" max="20000" value="10000" oninput="updatePriceRange()">
-                        <span id="max-price">₹10,000</span>
-                    </div>
-                </div>
-                
-                <div class="filter-group">
-                    <label>Hotel Type</label>
-                    <select id="hotel-type" onchange="applyFilters()">
-                        <option value="">All Types</option>
-                        <option value="luxury">Luxury</option>
-                        <option value="business">Business</option>
-                        <option value="budget">Budget</option>
-                        <option value="boutique">Boutique</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Star Rating</label>
-                    <select id="star-rating" onchange="applyFilters()">
-                        <option value="">All Ratings</option>
-                        <option value="5">5 Stars</option>
-                        <option value="4">4+ Stars</option>
-                        <option value="3">3+ Stars</option>
-                        <option value="2">2+ Stars</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Amenities</label>
-                    <div class="amenities-grid">
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="wifi" value="Wi-Fi" onchange="applyFilters()">
-                            <label for="wifi">Wi-Fi</label>
-                        </div>
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="pool" value="Pool" onchange="applyFilters()">
-                            <label for="pool">Pool</label>
-                        </div>
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="gym" value="Gym" onchange="applyFilters()">
-                            <label for="gym">Gym</label>
-                        </div>
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="spa" value="Spa" onchange="applyFilters()">
-                            <label for="spa">Spa</label>
-                        </div>
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="restaurant" value="Restaurant" onchange="applyFilters()">
-                            <label for="restaurant">Restaurant</label>
-                        </div>
-                        <div class="amenity-checkbox">
-                            <input type="checkbox" id="parking" value="Parking" onchange="applyFilters()">
-                            <label for="parking">Free Parking</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Loading State -->
         <div class="loading" id="loading" style="display: none;">
@@ -821,32 +730,7 @@
                     <!-- Room options will be populated here -->
                 </div>
 
-                <h4>Guest Information</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="guest_name">Full Name</label>
-                        <input type="text" id="guest_name" name="guest_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="guest_email">Email</label>
-                        <input type="email" id="guest_email" name="guest_email" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="guest_phone">Phone Number</label>
-                        <input type="tel" id="guest_phone" name="guest_phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="guest_id">ID Proof Number</label>
-                        <input type="text" id="guest_id" name="guest_id" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="special_requests">Special Requests (Optional)</label>
-                    <textarea id="special_requests" name="special_requests" rows="3" style="resize: vertical;"></textarea>
-                </div>
+                
 
                 <div class="booking-summary" id="booking-summary">
                     <!-- Booking summary will be populated here -->
@@ -858,7 +742,7 @@
             </form>
         </div>
     </div>
-
+    <div id="hotelConfirmationModal" style="display: none;"></div>
     <script>
         let currentHotelData = null;
         let allHotels = [];
@@ -1021,7 +905,6 @@
                 displayHotels();
                 
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('filters-section').style.display = 'block';
                 document.getElementById('hotels-container').style.display = 'block';
             }, 2000);
         }
@@ -1305,31 +1188,122 @@
         }
 
         // Confirm booking
-        function confirmBooking(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const bookingData = {
-                hotel: currentHotelData,
-                room: selectedRoom,
-                guest: {
-                    name: formData.get('guest_name'),
-                    email: formData.get('guest_email'),
-                    phone: formData.get('guest_phone'),
-                    id: formData.get('guest_id')
-                },
-                search: searchData,
-                special_requests: formData.get('special_requests'),
-                booking_id: 'BK' + Date.now()
-            };
+       function confirmBooking(event) {
+    event.preventDefault();
 
-            // Show success message
-            alert(`Booking confirmed! Your booking ID is: ${bookingData.booking_id}`);
-            closeBookingModal();
-            
-            // In a real application, this would send data to the server
-            console.log('Booking Data:', bookingData);
+    if (!selectedRoom || !currentHotelData || !searchData.checkin_date || !searchData.checkout_date) {
+        alert("Missing booking details.");
+        return;
+    }
+
+    const nights = calculateNights();
+    const totalAmount = selectedRoom.price * nights;
+
+    const bookingData = {
+        hotelName: currentHotelData.name,
+        location: currentHotelData.location || '',
+        checkIn: searchData.checkin_date,
+        checkOut: searchData.checkout_date,
+        guests: searchData.guests,
+        roomType: selectedRoom.type,
+        price: `${totalAmount}`
+    };
+
+    // Send data to backend to store in MongoDB
+    fetch('/api/book_hotel', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bookingData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Booking saved:", data);
+        window.addBookingToDashboard(bookingData); // store in dashboard
+        showHotelConfirmation(bookingData); // show confirmation modal
+    })
+    .catch(err => {
+        console.error("Error booking:", err);
+        alert("Booking failed. Try again.");
+    });
+}
+
+
+
+function showHotelConfirmation(booking) {
+    const modal = document.getElementById("hotelConfirmationModal");
+    modal.style.display = "flex";
+    modal.style.cssText = `
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        ">
+            <div style="color: #10b981; font-size: 4em; margin-bottom: 20px;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 style="color: #1f2937; margin-bottom: 20px;">Booking Confirmed!</h2>
+            <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: left;">
+                <p><strong>Booking ID:</strong> ${booking.id}</p>
+                <p><strong>Hotel:</strong> ${booking.name}</p>
+                <p><strong>Room:</strong> ${booking.room}</p>
+                <p><strong>Check-in:</strong> ${booking.checkin}</p>
+                <p><strong>Check-out:</strong> ${booking.checkout}</p>
+                <p><strong>Total Nights:</strong> ${booking.nights}</p>
+                <p><strong>Total Amount:</strong> ₹${booking.price}</p>
+            </div>
+            <p style="color: #6b7280; margin-bottom: 20px;">
+                A confirmation email has been sent to your registered address.
+            </p>
+            <button onclick="closeHotelConfirmation()" style="
+                padding: 12px 30px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">
+                <i class="fas fa-home"></i> Back to Home
+            </button>
+        </div>
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+    `;
+    document.head.appendChild(style);
+}
+function closeHotelConfirmation() {
+    const modal = document.getElementById("hotelConfirmationModal");
+    modal.style.display = "none";
+    closeBookingModal(); // Close modal if still open
+}
+
+
+
 
         // Modal functions
         function closeDetailsModal() {
@@ -1359,6 +1333,42 @@
         document.addEventListener('DOMContentLoaded', function() {
             setMinDates();
         });
+        function addBookingToDashboard(booking) {
+    localStorage.setItem('newBooking', JSON.stringify(booking));
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'newBooking',
+        newValue: JSON.stringify(booking)
+    }));
+}
+
+function formatBookingForDashboard(bookingType, formData) {
+    switch (bookingType) {
+        case "Flight":
+            return {
+                type: "Flight",
+                from: formData.from,
+                to: formData.to,
+                date: formData.departureDate,
+                seat: formData.seat || formData.class || "N/A",
+                flightNumber: formData.flightNumber,
+                airline: formData.airline,
+                price: `₹${formData.totalFare || formData.price}`
+            };
+        case "Hotel":
+            return {
+                type: "Hotel",
+                hotelName: formData.hotelName,
+                location: formData.location,
+                checkIn: formData.checkIn,
+                checkOut: formData.checkOut,
+                guests: formData.guests,
+                roomType: formData.roomType,
+                price: `₹${formData.totalFare || formData.price}`
+            };
+        default:
+            return {};
+    }
+}
     </script>
 </body>
 </html>
