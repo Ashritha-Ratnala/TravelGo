@@ -471,27 +471,6 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <i class="fas fa-plane"></i> TravelGo
-            </a>
-            <ul class="nav-links">
-                <li><a href="/buses">Buses</a></li>
-                <li><a href="/trains">Trains</a></li>
-                <li><a href="/flights" class="active">Flights</a></li>
-                <li><a href="/hotels">Hotels</a></li>
-                <li><a href="/dashboard">Dashboard</a></li>
-            </ul>
-            <div class="user-info">
-                <span>Welcome, {{ user.name or 'User' }}</span>
-                <a href="/logout" style="color: #667eea;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
 
     <div class="container">
         <!-- Page Header -->
@@ -588,9 +567,20 @@
                 </div>
             </div>
 
-            <div id="flights-list">
-                <!-- Flight results will be populated here -->
-            </div>
+           <div id="flights-list"></div>
+
+<!-- Confirmation Section -->
+<div class="flight-card" id="flightConfirmationSection" style="display: none;">
+  <h2><i class="fas fa-check-circle"></i> Booking Confirmed!</h2>
+  <p><strong>Airline:</strong> <span id="confirmAirline"></span></p>
+  <p><strong>Flight ID:</strong> <span id="confirmFlightID"></span></p>
+  <p><strong>From:</strong> <span id="confirmFrom"></span></p>
+  <p><strong>To:</strong> <span id="confirmTo"></span></p>
+  <p><strong>Departure:</strong> <span id="confirmDeparture"></span></p>
+  <p><strong>Arrival:</strong> <span id="confirmArrival"></span></p>
+  <p><strong>Price:</strong> ₹<span id="confirmPrice"></span></p>
+</div>
+
         </div>
 
         <!-- No Flights Found -->
@@ -601,39 +591,7 @@
         </div>
     </div>
 
-    <!-- Booking Modal -->
-    <div class="modal" id="booking-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Complete Your Booking</h3>
-                <button class="close-modal" onclick="closeBookingModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form class="booking-form" onsubmit="confirmBooking(event)">
-                <div class="form-group">
-                    <label for="passenger_name">Passenger Name</label>
-                    <input type="text" id="passenger_name" name="passenger_name" required>
-                </div>
-                <div class="form-group">
-                    <label for="passenger_email">Email</label>
-                    <input type="email" id="passenger_email" name="passenger_email" required>
-                </div>
-                <div class="form-group">
-                    <label for="passenger_phone">Phone Number</label>
-                    <input type="tel" id="passenger_phone" name="passenger_phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="passenger_age">Age</label>
-                    <input type="number" id="passenger_age" name="passenger_age" min="1" max="120" required>
-                </div>
-                <button type="submit" class="confirm-booking-btn">
-                    <i class="fas fa-credit-card"></i> Confirm Booking
-                </button>
-            </form>
-        </div>
-    </div>
-
+   
     <script>
         let currentFlightData = null;
         let allFlights = [];
@@ -759,7 +717,8 @@
                     </div>
                     <div class="price-booking">
                         <div class="price">₹${flight.price.toLocaleString()}</div>
-                        <button class="book-btn" onclick="openBookingModal('${flight.id}')">
+                        <button class="book-btn" onclick="confirmBooking('${flight.id}')">Book Now</button>
+
                             <i class="fas fa-ticket-alt"></i> Book Now
                         </button>
                     </div>
@@ -808,46 +767,68 @@
         }
 
         // Open booking modal
-        function openBookingModal(flightId) {
-            currentFlightData = allFlights.find(flight => flight.id === flightId);
-            document.getElementById('booking-modal').style.display = 'block';
-        }
-
-        // Close booking modal
-        function closeBookingModal() {
-            document.getElementById('booking-modal').style.display = 'none';
-            currentFlightData = null;
-        }
+       
 
         // Confirm booking
-        function confirmBooking(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const bookingData = Object.fromEntries(formData);
-            
-            // Add flight data to booking
-            bookingData.flight = currentFlightData;
-            bookingData.booking_id = 'TG' + Date.now();
-            bookingData.booking_date = new Date().toISOString();
-            
-            // Simulate booking API call
-            setTimeout(() => {
-                alert(`Booking confirmed! Your booking ID is: ${bookingData.booking_id}`);
-                closeBookingModal();
-                
-                // In a real app, you would send this data to your Flask backend
-                console.log('Booking data:', bookingData);
-            }, 1000);
-        }
+       function confirmBooking(flightId) {
+    const flight = allFlights.find(f => f.id === flightId);
+    if (!flight) return;
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('booking-modal');
-            if (event.target === modal) {
-                closeBookingModal();
-            }
-        });
+    // Update confirmation section (UI only)
+    document.getElementById('confirmAirline').textContent = flight.airline;
+    document.getElementById('confirmFlightID').textContent = flight.id;
+    document.getElementById('confirmFrom').textContent = flight.from;
+    document.getElementById('confirmTo').textContent = flight.to;
+    document.getElementById('confirmDeparture').textContent = flight.departure_time;
+    document.getElementById('confirmArrival').textContent = flight.arrival_time;
+    document.getElementById('confirmPrice').textContent = flight.price;
+
+    // Hide flight search and list
+    document.querySelector('form').style.display = 'none';
+    document.getElementById('flights-list').style.display = 'none';
+    document.getElementById('flightConfirmationSection').style.display = 'block';
+
+    // Submit booking data to Flask
+    const form = document.getElementById('bookFlightForm');
+    form.elements['from'].value = flight.from;
+    form.elements['to'].value = flight.to;
+    form.elements['date'].value = new Date().toISOString().split('T')[0]; // Or actual selected date
+    form.elements['seat'].value = flight.class;
+    form.elements['price'].value = flight.price;
+
+    form.submit();
+}
+
+function addBookingToDashboard(booking) {
+    localStorage.setItem('newBooking', JSON.stringify(booking));
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'newBooking',
+        newValue: JSON.stringify(booking)
+    }));
+}
+
+function formatBookingForDashboard(bookingType, formData) {
+    return {
+        type: "Flight",
+        from: formData.from,
+        to: formData.to,
+        date: formData.departureDate,
+        seat: formData.seat || formData.class || "N/A",
+        flightNumber: formData.flightNumber,
+        airline: formData.airline,
+        price: `₹${formData.totalFare || formData.price}`
+    };
+}
+
     </script>
+    <!-- Hidden Form for Submitting Booking to Flask -->
+<form id="bookFlightForm" action="/book_flight" method="POST" style="display: none;">
+    <input type="hidden" name="from">
+    <input type="hidden" name="to">
+    <input type="hidden" name="date">
+    <input type="hidden" name="seat">
+    <input type="hidden" name="price">
+</form>
+
 </body>
 </html>
