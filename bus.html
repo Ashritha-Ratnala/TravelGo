@@ -552,12 +552,10 @@
         <!-- Header Section -->
         <div class="header">
             <div class="nav-buttons">
-                <a href="/dashboard" class="nav-btn">
+                <a href="{{ url_for('dashboard') }}" class="nav-btn">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
                 </a>
-                <a href="/logout" class="nav-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                
             </div>
             <h1><i class="fas fa-bus"></i> Bus Booking</h1>
             <p>Find and book your perfect bus journey</p>
@@ -752,8 +750,6 @@
 
         function displayBusResults(buses) {
             const resultsSection = document.getElementById('resultsSection');
-            const resultsCount = document.getElementById('resultsCount');
-            const busResults = document.getElementById('busResults');
             
             resultsSection.innerHTML = `
                 <div class="results-header">
@@ -901,39 +897,50 @@
         }
 
         function proceedToBooking() {
-            if (selectedSeats.length === 0) {
-                alert('Please select at least one seat.');
-                return;
-            }
-            
-            // In real app, this would redirect to payment page or make API call
-            const bookingData = {
-                bus: currentBusData,
-                seats: selectedSeats,
-                totalAmount: currentBusData.price * selectedSeats.length,
-                bookingDate: new Date().toISOString()
-            };
-            
-            // Simulate booking process
-            bookNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            bookNowBtn.disabled = true;
-            
-            setTimeout(() => {
-                alert(`Booking confirmed! 
-Bus: ${currentBusData.name}
-Seats: ${selectedSeats.join(', ')}
-Total Amount: ₹${currentBusData.price * selectedSeats.length}
-Booking ID: BUS${Date.now()}
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat.');
+        return;
+    }
 
-You will receive a confirmation email shortly.`);
-                
-                closeSeatModal();
-                
-                // Reset button
-                bookNowBtn.innerHTML = '<i class="fas fa-credit-card"></i> Proceed to Booking';
-                bookNowBtn.disabled = false;
-            }, 2000);
-        }
+    const bookingData = {
+        from: document.getElementById('from').value,
+        to: document.getElementById('to').value,
+        date: document.getElementById('date').value,
+        seat: selectedSeats.join(', '),
+        price: `${currentBusData.price * selectedSeats.length}`,
+        busName: currentBusData.name,
+        status: 'Confirmed'
+    };
+
+    const bookNowBtn = document.getElementById('bookNowBtn');
+    bookNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    bookNowBtn.disabled = true;
+
+    fetch('/api/book_bus', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    credentials: 'include', // ✅ this is CRITICAL
+    body: JSON.stringify(bookingData)
+})
+
+    .then(res => res.json())
+    .then(data => {
+        console.log("Bus booking saved:", data);
+        closeSeatModal();
+        showBookingConfirmation(bookingData);
+    })
+    .catch(err => {
+        console.error("Error booking bus:", err);
+        alert("Booking failed. Please try again.");
+    })
+    .finally(() => {
+        bookNowBtn.innerHTML = '<i class="fas fa-credit-card"></i> Proceed to Booking';
+        bookNowBtn.disabled = false;
+    });
+}
+
 
         function toggleFilters() {
             alert('Filter functionality will be implemented here. You can filter by price range, bus type, departure time, etc.');
@@ -943,6 +950,492 @@ You will receive a confirmation email shortly.`);
         document.getElementById('seatModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeSeatModal();
+            }});
+
+        // Additional features to continue the code:
+
+        // Auto-complete for city names
+        const popularCities = [
+            'Hyderabad', 'Bangalore', 'Chennai', 'Mumbai', 'Delhi', 'Kolkata', 
+            'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur',
+            'Indore', 'Thane', 'Bhopal', 'Visakhapatnam', 'Pimpri', 'Patna',
+            'Vadodara', 'Ghaziabad', 'Ludhiana', 'Agra', 'Nashik', 'Faridabad'
+        ];
+
+        function setupAutoComplete() {
+            const fromInput = document.getElementById('from');
+            const toInput = document.getElementById('to');
+            
+            [fromInput, toInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = this.value.toLowerCase();
+                    const suggestions = popularCities.filter(city => 
+                        city.toLowerCase().includes(value)
+                    );
+                    showSuggestions(this, suggestions);
+                });
+            });
+        }
+
+        function showSuggestions(input, suggestions) {
+            // Remove existing suggestions
+            const existingSuggestions = input.parentNode.querySelector('.suggestions');
+            if (existingSuggestions) {
+                existingSuggestions.remove();
             }
+
+            if (suggestions.length === 0 || input.value === '') return;
+
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggestions';
+            suggestionsDiv.style.cssText = `
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 1000;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            `;
+
+            suggestions.slice(0, 5).forEach(city => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.textContent = city;
+                suggestionItem.style.cssText = `
+                    padding: 10px 15px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #f3f4f6;
+                    transition: background-color 0.2s;
+                `;
+                suggestionItem.addEventListener('mouseenter', () => {
+                    suggestionItem.style.backgroundColor = '#f8fafc';
+                });
+                suggestionItem.addEventListener('mouseleave', () => {
+                    suggestionItem.style.backgroundColor = 'white';
+                });
+                suggestionItem.addEventListener('click', () => {
+                    input.value = city;
+                    suggestionsDiv.remove();
+                });
+                suggestionsDiv.appendChild(suggestionItem);
+            });
+
+            input.parentNode.style.position = 'relative';
+            input.parentNode.appendChild(suggestionsDiv);
+        }
+
+        // Advanced filtering functionality
+        function showFilterModal() {
+            const filterModal = document.createElement('div');
+            filterModal.id = 'filterModal';
+            filterModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                backdrop-filter: blur(5px);
+            `;
+
+            filterModal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 20px;
+                    padding: 30px;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 1.5em; font-weight: 700; color: #1f2937;">Filter Buses</h2>
+                        <button onclick="closeFilterModal()" style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: #6b7280;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Price Range</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="range" id="priceRange" min="300" max="1500" value="1500" style="flex: 1;">
+                            <span id="priceValue">₹1500</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Departure Time</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="morning" name="timeSlot"> Morning (6AM-12PM)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="afternoon" name="timeSlot"> Afternoon (12PM-6PM)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="evening" name="timeSlot"> Evening (6PM-9PM)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="night" name="timeSlot"> Night (9PM-6AM)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Bus Types</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="ac" name="busTypeFilter"> AC
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="non-ac" name="busTypeFilter"> Non-AC
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="sleeper" name="busTypeFilter"> Sleeper
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" value="semi-sleeper" name="busTypeFilter"> Semi-Sleeper
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="clearFilters()" style="
+                            flex: 1;
+                            padding: 12px;
+                            background: #f3f4f6;
+                            border: 1px solid #d1d5db;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">Clear All</button>
+                        <button onclick="applyFilters()" style="
+                            flex: 1;
+                            padding: 12px;
+                            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">Apply Filters</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(filterModal);
+
+            // Setup price range slider
+            const priceRange = document.getElementById('priceRange');
+            const priceValue = document.getElementById('priceValue');
+            
+            priceRange.addEventListener('input', function() {
+                priceValue.textContent = `₹${this.value}`;
+            });
+
+            // Close modal on outside click
+            filterModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeFilterModal();
+                }
+            });
+        }
+
+        function closeFilterModal() {
+            const filterModal = document.getElementById('filterModal');
+            if (filterModal) {
+                filterModal.remove();
+            }
+        }
+
+        function clearFilters() {
+            // Reset all filter inputs
+            document.getElementById('priceRange').value = 1500;
+            document.getElementById('priceValue').textContent = '₹1500';
+            document.querySelectorAll('input[name="timeSlot"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="busTypeFilter"]').forEach(cb => cb.checked = false);
+        }
+
+        function applyFilters() {
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            const selectedTimeSlots = Array.from(document.querySelectorAll('input[name="timeSlot"]:checked')).map(cb => cb.value);
+            const selectedBusTypes = Array.from(document.querySelectorAll('input[name="busTypeFilter"]:checked')).map(cb => cb.value);
+            
+            // Filter the buses based on criteria
+            let filteredBuses = sampleBuses.filter(bus => {
+                // Price filter
+                if (bus.price > maxPrice) return false;
+                
+                // Time slot filter
+                if (selectedTimeSlots.length > 0) {
+                    const hour = parseInt(bus.departure.split(':')[0]);
+                    let timeSlot = '';
+                    if (hour >= 6 && hour < 12) timeSlot = 'morning';
+                    else if (hour >= 12 && hour < 18) timeSlot = 'afternoon';
+                    else if (hour >= 18 && hour < 21) timeSlot = 'evening';
+                    else timeSlot = 'night';
+                    
+                    if (!selectedTimeSlots.includes(timeSlot)) return false;
+                }
+                
+                // Bus type filter
+                if (selectedBusTypes.length > 0) {
+                    const busType = bus.type.toLowerCase();
+                    const matchesType = selectedBusTypes.some(type => busType.includes(type));
+                    if (!matchesType) return false;
+                }
+                
+                return true;
+            });
+            
+            displayBusResults(filteredBuses);
+            closeFilterModal();
+        }
+
+        // Update the toggleFilters function to use the new modal
+        function toggleFilters() {
+            showFilterModal();
+        }
+
+        // Booking history functionality
+        function saveBookingToHistory(bookingData) {
+            let bookingHistory = JSON.parse(localStorage.getItem('busBookingHistory') || '[]');
+            bookingHistory.unshift(bookingData); // Add to beginning
+            bookingHistory = bookingHistory.slice(0, 10); // Keep only last 10 bookings
+            localStorage.setItem('busBookingHistory', JSON.stringify(bookingHistory));
+        }
+
+        // Enhanced booking process
+        function proceedToBooking() {
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat.');
+        return;
+    }
+
+    const bookingData = {
+        from: document.getElementById('from').value,
+        to: document.getElementById('to').value,
+        date: document.getElementById('date').value,
+        seat: selectedSeats.join(', '),
+        price: `${currentBusData.price * selectedSeats.length}`,
+        busName: currentBusData.name,
+        status: 'Confirmed',
+        travelDate: document.getElementById('date').value,
+        seats: selectedSeats,
+        totalAmount: currentBusData.price * selectedSeats.length,
+        bus: currentBusData
+    };
+
+    // Show loading spinner on button
+    const bookNowBtn = document.getElementById('bookNowBtn');
+    bookNowBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    bookNowBtn.disabled = true;
+
+    // Call backend API to save booking
+    fetch('/api/book_bus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',  // IMPORTANT: needed to send session cookie
+        body: JSON.stringify(bookingData)
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Server returned status " + res.status);
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log("✅ Booking saved:", data);
+
+        // Close modal and show confirmation
+        closeSeatModal();
+        showBookingConfirmation(bookingData);
+    })
+    .catch(err => {
+        console.error("❌ Booking failed:", err);
+        alert("Booking failed. Please try again.");
+    })
+    .finally(() => {
+        // Reset button
+        bookNowBtn.innerHTML = '<i class="fas fa-credit-card"></i> Proceed to Booking';
+        bookNowBtn.disabled = false;
+    });
+}
+
+        function showBookingConfirmation(bookingData) {
+            const confirmationModal = document.createElement('div');
+            confirmationModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1001;
+                backdrop-filter: blur(5px);
+            `;
+
+            confirmationModal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 20px;
+                    padding: 30px;
+                    max-width: 500px;
+                    width: 90%;
+                    text-align: center;
+                    animation: slideIn 0.3s ease-out;
+                ">
+                    <div style="color: #10b981; font-size: 4em; margin-bottom: 20px;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 style="color: #1f2937; margin-bottom: 20px;">Booking Confirmed!</h2>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: left;">
+                        <p><strong>Booking ID:</strong> ${bookingData.id}</p>
+                        <p><strong>Bus:</strong> ${bookingData.bus.name}</p>
+                        <p><strong>Route:</strong> ${bookingData.from} → ${bookingData.to}</p>
+                        <p><strong>Date:</strong> ${bookingData.travelDate}</p>
+                        <p><strong>Seats:</strong> ${bookingData.seats.join(', ')}</p>
+                        <p><strong>Total Amount:</strong> ₹${bookingData.totalAmount}</p>
+                    </div>
+                    <p style="color: #6b7280; margin-bottom: 20px;">
+                        A confirmation email has been sent to your registered email address.
+                    </p>
+                    <button onclick="closeConfirmationAndReset()" style="
+                        padding: 12px 30px;
+                        background: linear-gradient(135deg, #10b981, #059669);
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    ">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                </div>
+            `;
+
+            // Add animation keyframes
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-50px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            document.body.appendChild(confirmationModal);
+            
+            // Save to booking history
+            saveBookingToHistory(bookingData);
+            const formatted = formatBookingForDashboard("Bus", bookingData);
+addBookingToDashboard(formatted);
+        }
+
+        function closeConfirmationAndReset() {
+            // Remove confirmation modal
+            const confirmationModal = document.querySelector('div[style*="z-index: 1001"]');
+            if (confirmationModal) {
+                confirmationModal.remove();
+            }
+            
+            // Close seat modal
+            closeSeatModal();
+            
+            // Reset form
+            document.getElementById('busSearchForm').reset();
+            document.getElementById('resultsSection').classList.remove('active');
+            
+            // Set minimum date to today
+            document.getElementById('date').min = new Date().toISOString().split('T')[0];
+        }
+
+        // Initialize auto-complete on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAutoComplete();
         });
-    </script
+
+        // Add loading animation for better UX
+        function showLoadingAnimation() {
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loadingOverlay';
+            loadingOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(79, 70, 229, 0.9);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                color: white;
+            `;
+            
+            loadingOverlay.innerHTML = `
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    border: 4px solid rgba(255, 255, 255, 0.3);
+                    border-top: 4px solid white;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin-bottom: 20px;
+                "></div>
+                <h3>Processing your booking...</h3>
+                <p>Please wait while we confirm your seats</p>
+            `;
+            
+            document.body.appendChild(loadingOverlay);
+            
+            return loadingOverlay;
+        }
+
+        function hideLoadingAnimation() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.remove();
+            }
+        }
+        function addBookingToDashboard(booking) {
+        localStorage.setItem('newBooking', JSON.stringify(booking));
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'newBooking',
+            newValue: JSON.stringify(booking)
+        }));
+    }
+
+    function formatBookingForDashboard(bookingType, formData) {
+        return {
+            type: bookingType,
+            from: formData.from,
+            to: formData.to,
+            date: formData.travelDate,
+            seat: formData.seats.join(', '),
+            busNumber: formData.bus?.name || "Bus",
+            price: `₹${formData.totalAmount}`
+        };
+    }
+    </script>
+</body>
+</html>
