@@ -181,58 +181,9 @@ def confirm_bus_details():
     }
     
     session['pending_booking'] = booking_details
-    return redirect(url_for('select_bus_seats',
-                            name=booking_details['name'],
-                            source=booking_details['source'],
-                            destination=booking_details['destination'],
-                            time=booking_details['time'],
-                            type=booking_details['type'],
-                            price=str(booking_details['price_per_person']),
-                            date=booking_details['travel_date'],
-                            persons=str(booking_details['num_persons']),
-                            busId=booking_details['item_id']))
+    return render_template("bus.html", booking=booking_details)
 
-@app.route('/select_bus_seats')
-def select_bus_seats():
-    if 'email' not in session:
-        return redirect(url_for('login'))
 
-    booking = session.get('pending_booking', {})
-    if not booking:
-        booking = {
-            'name': request.args.get('name'),
-            'source': request.args.get('source'),
-            'destination': request.args.get('destination'),
-            'time': request.args.get('time'),
-            'type': request.args.get('type'),
-            'price_per_person': Decimal(request.args.get('price')),
-            'travel_date': request.args.get('date'),
-            'num_persons': int(request.args.get('persons')),
-            'item_id': request.args.get('busId'),
-            'booking_type': 'bus',
-            'user_email': session['email'],
-            'total_price': Decimal(request.args.get('price')) * int(request.args.get('persons'))
-        }
-        session['pending_booking'] = booking
-
-    # Get booked seats
-    try:
-        response = bookings_table.scan(
-            FilterExpression=Attr('item_id').eq(booking['item_id']) &
-                             Attr('travel_date').eq(booking['travel_date']) &
-                             Attr('booking_type').eq('bus')
-        )
-        
-        booked_seats = set()
-        for b in response.get('Items', []):
-            if 'seats_display' in b:
-                booked_seats.update(b['seats_display'].split(', '))
-    except Exception as e:
-        print(f"Error getting booked seats: {e}")
-        booked_seats = set()
-
-    all_seats = [f"S{i}" for i in range(1, 41)]  # 40 seats per bus
-    return render_template("select_bus_seats.html", booking=booking, booked_seats=booked_seats, all_seats=all_seats)
 
 @app.route('/api/book_bus', methods=['POST'])
 def api_book_bus():
