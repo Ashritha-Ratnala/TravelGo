@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background elements */
         .bg-animation {
             position: absolute;
             width: 100%;
@@ -62,7 +61,6 @@
             66% { transform: translateY(30px) rotate(240deg); }
         }
 
-        /* Main container */
         .register-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -70,10 +68,20 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             padding: 40px;
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             position: relative;
             z-index: 1;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInScale 0.8s ease forwards;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .logo-section {
@@ -106,6 +114,20 @@
         .form-group {
             margin-bottom: 25px;
             position: relative;
+            animation: slideInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-group label {
@@ -176,68 +198,6 @@
             display: none;
         }
 
-        .terms-checkbox {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            gap: 12px;
-        }
-
-        .checkbox-wrapper {
-            position: relative;
-            margin-top: 2px;
-        }
-
-        .checkbox-wrapper input[type="checkbox"] {
-            opacity: 0;
-            position: absolute;
-        }
-
-        .checkmark {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark {
-            background: #667eea;
-            border-color: #667eea;
-        }
-
-        .checkmark i {
-            color: white;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark i {
-            opacity: 1;
-        }
-
-        .terms-text {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .terms-text a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .terms-text a:hover {
-            text-decoration: underline;
-        }
-
         .register-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -251,6 +211,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            margin-top: 10px;
         }
 
         .register-btn:hover {
@@ -266,26 +227,6 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-        }
-
-        .btn-text {
-            position: relative;
-            z-index: 2;
-        }
-
-        .loading-spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         .login-link {
@@ -316,6 +257,7 @@
             border-radius: 8px;
             margin-bottom: 10px;
             font-size: 0.9rem;
+            animation: slideIn 0.3s ease-out;
         }
 
         .alert-success {
@@ -330,28 +272,43 @@
             color: #721c24;
         }
 
-        .strength-meter {
-            margin-top: 8px;
-            height: 4px;
-            background: #e1e5e9;
-            border-radius: 2px;
-            overflow: hidden;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-loading {
             display: none;
         }
 
-        .strength-fill {
-            height: 100%;
-            transition: all 0.3s ease;
-            border-radius: 2px;
+        .register-btn.loading .btn-text {
+            opacity: 0;
         }
 
-        .strength-text {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            font-weight: 500;
+        .register-btn.loading .btn-loading {
+            display: inline-block;
         }
 
-        /* Responsive design */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 480px) {
             .register-container {
                 margin: 20px;
@@ -364,40 +321,6 @@
             
             .form-control {
                 padding: 12px 16px 12px 45px;
-            }
-        }
-
-        /* Smooth animations */
-        .form-group {
-            animation: slideInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
-        .form-group:nth-child(4) { animation-delay: 0.4s; }
-        .form-group:nth-child(5) { animation-delay: 0.5s; }
-        .form-group:nth-child(6) { animation-delay: 0.6s; }
-
-        @keyframes slideInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .register-container {
-            animation: fadeInScale 0.8s ease forwards;
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        @keyframes fadeInScale {
-            to {
-                opacity: 1;
-                transform: scale(1);
             }
         }
     </style>
@@ -415,7 +338,18 @@
 
         <!-- Flash Messages -->
         <div class="flash-messages">
-            <!-- Flash messages will be displayed here -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% if message %}
+                <div class="alert alert-error">{{ message }}</div>
+            {% endif %}
         </div>
 
         <form id="registerForm" method="POST" action="/register">
@@ -425,7 +359,7 @@
                     <i class="fas fa-user input-icon"></i>
                     <input type="text" 
                            id="fullName" 
-                           name="full_name" 
+                           name="name" 
                            class="form-control" 
                            placeholder="Enter your full name"
                            required>
@@ -448,20 +382,6 @@
             </div>
 
             <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-phone input-icon"></i>
-                    <input type="tel" 
-                           id="phone" 
-                           name="phone" 
-                           class="form-control" 
-                           placeholder="Enter your phone number"
-                           required>
-                </div>
-                <div class="error-message" id="phoneError"></div>
-            </div>
-
-            <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
@@ -473,44 +393,14 @@
                            required>
                     <i class="fas fa-eye password-toggle" id="togglePassword"></i>
                 </div>
-                <div class="strength-meter" id="strengthMeter">
-                    <div class="strength-fill" id="strengthFill"></div>
-                </div>
-                <div class="strength-text" id="strengthText"></div>
                 <div class="error-message" id="passwordError"></div>
             </div>
 
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" 
-                           id="confirmPassword" 
-                           name="confirm_password" 
-                           class="form-control" 
-                           placeholder="Confirm your password"
-                           required>
-                    <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
-                </div>
-                <div class="error-message" id="confirmPasswordError"></div>
-            </div>
-
-            <div class="terms-checkbox">
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms" class="checkmark">
-                        <i class="fas fa-check"></i>
-                    </label>
-                </div>
-                <div class="terms-text">
-                    I agree to the <a href="#" target="_blank">Terms of Service</a> and 
-                    <a href="#" target="_blank">Privacy Policy</a>
-                </div>
-            </div>
-
             <button type="submit" class="register-btn" id="registerBtn">
-                <div class="loading-spinner" id="loadingSpinner"></div>
                 <span class="btn-text">Create Account</span>
+                <div class="btn-loading">
+                    <div class="spinner"></div>
+                </div>
             </button>
         </form>
 
@@ -520,40 +410,26 @@
     </div>
 
     <script>
-        // Form validation and interactions
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('registerForm');
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const strengthMeter = document.getElementById('strengthMeter');
-            const strengthFill = document.getElementById('strengthFill');
-            const strengthText = document.getElementById('strengthText');
+            const registerBtn = document.getElementById('registerBtn');
             
-            // Password visibility toggles
+            // Password visibility toggle
             setupPasswordToggle('togglePassword', 'password');
-            setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
-            
-            // Password strength checker
-            passwordInput.addEventListener('input', function() {
-                const password = this.value;
-                if (password.length > 0) {
-                    strengthMeter.style.display = 'block';
-                    const strength = calculatePasswordStrength(password);
-                    updateStrengthMeter(strength);
-                } else {
-                    strengthMeter.style.display = 'none';
-                }
-            });
             
             // Real-time validation
             setupRealTimeValidation();
             
-            // Form submission
+            // Form submission with loading state
             form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (validateForm()) {
-                    submitForm();
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return false;
                 }
+                
+                // Show loading state
+                registerBtn.classList.add('loading');
+                registerBtn.disabled = true;
             });
         });
         
@@ -561,53 +437,32 @@
             const toggle = document.getElementById(toggleId);
             const input = document.getElementById(inputId);
             
-            toggle.addEventListener('click', function() {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        }
-        
-        function calculatePasswordStrength(password) {
-            let strength = 0;
-            
-            // Length check
-            if (password.length >= 8) strength += 1;
-            if (password.length >= 12) strength += 1;
-            
-            // Character variety checks
-            if (/[a-z]/.test(password)) strength += 1;
-            if (/[A-Z]/.test(password)) strength += 1;
-            if (/[0-9]/.test(password)) strength += 1;
-            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-            
-            return Math.min(strength, 4);
-        }
-        
-        function updateStrengthMeter(strength) {
-            const colors = ['#dc3545', '#fd7e14', '#ffc107', '#28a745', '#007bff'];
-            const texts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-            const widths = [20, 40, 60, 80, 100];
-            
-            strengthFill.style.width = widths[strength] + '%';
-            strengthFill.style.backgroundColor = colors[strength];
-            strengthText.textContent = texts[strength];
-            strengthText.style.color = colors[strength];
+            if (toggle && input) {
+                toggle.addEventListener('click', function() {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
         }
         
         function setupRealTimeValidation() {
-            const inputs = ['fullName', 'email', 'phone', 'password', 'confirmPassword'];
+            const inputs = ['fullName', 'email', 'password'];
             
             inputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
-                input.addEventListener('blur', () => validateField(inputId));
-                input.addEventListener('input', () => clearError(inputId));
+                if (input) {
+                    input.addEventListener('blur', () => validateField(inputId));
+                    input.addEventListener('input', () => clearError(inputId));
+                }
             });
         }
         
         function validateField(fieldId) {
             const field = document.getElementById(fieldId);
+            if (!field) return true;
+            
             const value = field.value.trim();
             let isValid = true;
             let errorMessage = '';
@@ -628,25 +483,9 @@
                     }
                     break;
                     
-                case 'phone':
-                    const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
-                    if (!phonePattern.test(value.replace(/[\s\-\(\)]/g, ''))) {
-                        errorMessage = 'Please enter a valid phone number';
-                        isValid = false;
-                    }
-                    break;
-                    
                 case 'password':
-                    if (value.length < 8) {
-                        errorMessage = 'Password must be at least 8 characters long';
-                        isValid = false;
-                    }
-                    break;
-                    
-                case 'confirmPassword':
-                    const password = document.getElementById('password').value;
-                    if (value !== password) {
-                        errorMessage = 'Passwords do not match';
+                    if (value.length < 6) {
+                        errorMessage = 'Password must be at least 6 characters long';
                         isValid = false;
                     }
                     break;
@@ -665,21 +504,25 @@
             const field = document.getElementById(fieldId);
             const errorElement = document.getElementById(fieldId + 'Error');
             
-            field.classList.add('error');
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
+            if (field && errorElement) {
+                field.classList.add('error');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
         }
         
         function clearError(fieldId) {
             const field = document.getElementById(fieldId);
             const errorElement = document.getElementById(fieldId + 'Error');
             
-            field.classList.remove('error');
-            errorElement.style.display = 'none';
+            if (field && errorElement) {
+                field.classList.remove('error');
+                errorElement.style.display = 'none';
+            }
         }
         
         function validateForm() {
-            const fields = ['fullName', 'email', 'phone', 'password', 'confirmPassword'];
+            const fields = ['fullName', 'email', 'password'];
             let isValid = true;
             
             fields.forEach(fieldId => {
@@ -688,50 +531,8 @@
                 }
             });
             
-            // Check terms checkbox
-            const termsCheckbox = document.getElementById('terms');
-            if (!termsCheckbox.checked) {
-                alert('Please accept the Terms of Service and Privacy Policy');
-                isValid = false;
-            }
-            
             return isValid;
         }
-        
-        function submitForm() {
-            const submitBtn = document.getElementById('registerBtn');
-            const spinner = document.getElementById('loadingSpinner');
-            const btnText = submitBtn.querySelector('.btn-text');
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-            btnText.textContent = 'Creating Account...';
-            
-            // Simulate form submission (replace with actual form submission)
-            setTimeout(() => {
-                // Reset button state
-                submitBtn.disabled = false;
-                spinner.style.display = 'none';
-                btnText.textContent = 'Create Account';
-                
-                // Here you would normally submit the form
-                document.getElementById('registerForm').submit();
-            }, 2000);
-        }
-        
-        // Add floating animation to form elements
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                }
-            });
-        });
-        
-        document.querySelectorAll('.form-group').forEach(el => {
-            observer.observe(el);
-        });
     </script>
 </body>
 </html>
