@@ -703,12 +703,10 @@
         <!-- Header Section -->
         <div class="header">
             <div class="nav-buttons">
-                <a href="/dashboard" class="nav-btn">
+                <a href="{{ url_for('dashboard') }}" class="nav-btn">
                     <i class="fas fa-tachometer-alt"></i> Dashboard
                 </a>
-                <a href="/logout" class="nav-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                
             </div>
             <h1><i class="fas fa-train"></i> Train Booking</h1>
             <p>Book your train tickets with ease and comfort</p>
@@ -788,79 +786,52 @@
         </div>
     </div>
 
-    <!-- Booking Modal -->
-    <div class="booking-modal" id="bookingModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Book Train Ticket</h2>
-                <button class="close-btn" onclick="closeBookingModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+    <!-- Booking Confirmation Section -->
+<div class="results-section" id="trainConfirmationSection" style="display: none;">
+    <div class="train-card">
+        <div class="train-header">
+            <div class="train-info">
+                <div class="train-name" id="confirmTrainName"></div>
+                <span class="train-number" id="confirmTrainNumber"></span>
             </div>
-            
-            <div class="booking-summary" id="bookingSummary">
-                <h3 style="margin-bottom: 15px; color: #1f2937;">Journey Details</h3>
-                <div class="summary-item">
-                    <span>Train:</span>
-                    <span id="summaryTrain"></span>
-                </div>
-                <div class="summary-item">
-                    <span>From:</span>
-                    <span id="summaryFrom"></span>
-                </div>
-                <div class="summary-item">
-                    <span>To:</span>
-                    <span id="summaryTo"></span>
-                </div>
-                <div class="summary-item">
-                    <span>Date:</span>
-                    <span id="summaryDate"></span>
-                </div>
-                <div class="summary-item">
-                    <span>Class:</span>
-                    <span id="summaryClass"></span>
-                </div>
-                <div class="summary-item summary-total">
-                    <span>Fare per person:</span>
-                    <span id="summaryFare">₹0</span>
-                </div>
+            <div class="train-status">
+                <span class="status-badge on-time">Booking Confirmed</span>
             </div>
+        </div>
 
-            <div class="passenger-form">
-                <h3 style="margin-bottom: 20px; color: #1f2937;">Passenger Details</h3>
-                <div id="passengerContainer">
-                    <!-- Passenger forms will be added here -->
-                </div>
-                <button type="button" onclick="addPassenger()" style="margin-bottom: 20px; padding: 10px 20px; background: #e11d48; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                    <i class="fas fa-plus"></i> Add Passenger
-                </button>
+        <div class="journey-details">
+            <div class="station-info">
+                <div class="station-name" id="confirmFromStation"></div>
+                <div class="station-code" id="confirmFromCode"></div>
             </div>
+            <div class="journey-line">
+                <div class="duration" id="confirmDuration"></div>
+                <div class="train-line"></div>
+                <div class="distance" id="confirmDistance"></div>
+            </div>
+            <div class="station-info">
+                <div class="station-name" id="confirmToStation"></div>
+                <div class="station-code" id="confirmToCode"></div>
+            </div>
+        </div>
 
-            <div class="booking-summary">
-                <h3 style="margin-bottom: 15px; color: #1f2937;">Fare Summary</h3>
-                <div class="summary-item">
-                    <span>Base Fare:</span>
-                    <span id="baseFare">₹0</span>
-                </div>
-                <div class="summary-item">
-                    <span>Reservation Charges:</span>
-                    <span id="reservationCharges">₹40</span>
-                </div>
-                <div class="summary-item">
-                    <span>Service Tax:</span>
-                    <span id="serviceTax">₹0</span>
-                </div>
-                <div class="summary-item summary-total">
-                    <span>Total Amount:</span>
-                    <span id="totalAmount">₹0</span>
-                </div>
+        <div class="booking-summary">
+            <div class="summary-item">
+                <span>Class:</span>
+                <span id="confirmClass"></span>
             </div>
-            
-            <button class="confirm-booking-btn" id="confirmBookingBtn" onclick="confirmBooking()">
-                <i class="fas fa-credit-card"></i> Proceed to Payment
-            </button>
+            <div class="summary-item">
+                <span>Total Fare:</span>
+                <span id="confirmFare"></span>
+            </div>
+            <div class="summary-total">
+                <i class="fas fa-check-circle" style="color: green;"></i>
+                Your booking has been successfully confirmed!
+            </div>
         </div>
     </div>
+</div>
+
 
     <script>
         // Global variables
@@ -945,60 +916,48 @@
         }
 
         function showLoading() {
-            const resultsSection = document.getElementById('resultsSection');
-            resultsSection.classList.add('active');
-            resultsSection.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Searching for trains...</p>
-                </div>
-            `;
-        }
+    const resultsSection = document.getElementById('resultsSection');
+    const trainResults = document.getElementById('trainResults');
+
+    resultsSection.classList.add('active');
+
+    // Show loading spinner only inside the trainResults div
+    trainResults.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Searching for trains...</p>
+        </div>
+    `;
+}
+
 
         function hideLoading() {
             // Loading will be replaced by results
         }
-
         function displayTrainResults(trains) {
-            const resultsSection = document.getElementById('resultsSection');
-            const resultsCount = document.getElementById('resultsCount');
-            const trainResults = document.getElementById('trainResults');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsCount = document.getElementById('resultsCount');
+    const trainResults = document.getElementById('trainResults');
 
-            resultsSection.innerHTML = `
-                <div class="results-header">
-                    <div class="results-count" id="resultsCount">Found ${trains.length} trains</div>
-                    <div class="filter-options">
-                        <button class="filter-btn active" data-filter="all">All Trains</button>
-                        <button class="filter-btn" data-filter="superfast">Superfast</button>
-                        <button class="filter-btn" data-filter="express">Express</button>
-                        <button class="filter-btn" data-filter="mail">Mail</button>
-                        <button class="filter-btn" data-filter="passenger">Passenger</button>
-                    </div>
-                </div>
-                <div id="trainResults"></div>
-                <button class="load-more-btn" onclick="loadMoreTrains()" style="display: none;">
-                    <i class="fas fa-plus"></i> Load More Trains
-                </button>
-            `;
+    resultsSection.classList.add('active');
+    resultsCount.textContent = `Found ${trains.length} trains`;
+    trainResults.innerHTML = ''; // Clear old results
 
-            const newTrainResults = document.getElementById('trainResults');
-            
-            trains.forEach(train => {
-                const trainCard = createTrainCard(train);
-                newTrainResults.appendChild(trainCard);
-            });
+    trains.forEach(train => {
+        const trainCard = createTrainCard(train);
+        trainResults.appendChild(trainCard);
+    });
 
-            // Add filter event listeners
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filterTrains(this.dataset.filter);
-                });
-            });
+    // Add filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterTrains(this.dataset.filter);
+        });
+    });
+}
 
-            resultsSection.classList.add('active');
-        }
 
         function createTrainCard(train) {
             const card = document.createElement('div');
@@ -1066,7 +1025,8 @@
                     <div class="train-amenities">
                         ${amenities}
                     </div>
-                    <button class="book-train-btn" onclick="openBookingModal('${train.name}', '${train.number}', '${train.from.name}', '${train.to.name}')" disabled>
+                    <button class="book-train-btn" onclick="confirmBooking()" disabled>
+
                         <i class="fas fa-ticket-alt"></i> Book Now
                     </button>
                 </div>
@@ -1099,25 +1059,32 @@
         }
 
         function selectClass(classType, price, trainName, trainNumber) {
-            // Remove previous selections
-            document.querySelectorAll('.class-card').forEach(card => {
-                card.classList.remove('selected');
-            });
+    const trainCard = event.target.closest('.train-card');
+    currentTrainData = sampleTrains.find(t => t.name === trainName && t.number === trainNumber);
 
-            // Add selection to clicked card
-            event.target.closest('.class-card').classList.add('selected');
+    // Deselect all
+    document.querySelectorAll('.class-card').forEach(card => card.classList.remove('selected'));
+    trainCard.querySelectorAll('.class-card').forEach(card => card.classList.remove('selected'));
+    event.target.closest('.class-card').classList.add('selected');
 
-            // Enable book button for this train
-            const trainCard = event.target.closest('.train-card');
-            const bookBtn = trainCard.querySelector('.book-train-btn');
-            bookBtn.disabled = false;
+    // Enable book button
+    const bookBtn = trainCard.querySelector('.book-train-btn');
+    bookBtn.disabled = false;
+
 
             // Store selection data
-            selectedClass = {
-                type: classType,
-                price: price,
-                name: getClassName(classType)
-            };
+           selectedClass = {
+    trainName: trainName,
+    trainNumber: trainNumber,
+    fromName: currentTrainData.from.name,
+    fromCode: currentTrainData.from.code,
+    toName: currentTrainData.to.name,
+    toCode: currentTrainData.to.code,
+    duration: currentTrainData.duration,
+    distance: currentTrainData.distance,
+    classType: getClassName(classType),
+    totalFare: price
+};
         }
 
         function filterTrains(filter) {
@@ -1224,16 +1191,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Mobile Number</label>
-                        <input type="tel" placeholder="10-digit mobile number">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" placeholder="Email address">
-                    </div>
-                </div>
             `;
             
             container.appendChild(passengerDiv);
@@ -1272,44 +1229,62 @@
             document.getElementById('totalAmount').textContent = `₹${totalAmount}`;
         }
 
-        function confirmBooking() {
-            // Validate passenger details
-            const passengers = document.querySelectorAll('.passenger-card');
-            let isValid = true;
+       function confirmBooking() {
+    if (!selectedClass) {
+        alert("Please select a class before booking.");
+        return;
+    }
 
-            passengers.forEach(passenger => {
-                const requiredFields = passenger.querySelectorAll('input[required], select[required]');
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        field.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        field.style.borderColor = '#d1d5db';
-                    }
-                });
-            });
+    const bookingPayload = {
+        trainName: selectedClass.trainName,
+        trainNumber: selectedClass.trainNumber,
+        from: selectedClass.fromName,
+        to: selectedClass.toName,
+        date: new Date().toISOString().split('T')[0], // or get value from search form
+        seat: selectedClass.classType,
+        price: selectedClass.totalFare
+    };
 
-            if (!isValid) {
-                alert('Please fill all required fields');
-                return;
-            }
+    fetch('/api/book_train', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bookingPayload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Booking failed');
+        return res.json();
+    })
+    .then(data => {
+        // Show confirmation section
+        document.getElementById('confirmTrainName').textContent = selectedClass.trainName;
+        document.getElementById('confirmTrainNumber').textContent = selectedClass.trainNumber;
+        document.getElementById('confirmFromStation').textContent = selectedClass.fromName;
+        document.getElementById('confirmToStation').textContent = selectedClass.toName;
+        document.getElementById('confirmFromCode').textContent = selectedClass.fromCode;
+        document.getElementById('confirmToCode').textContent = selectedClass.toCode;
+        document.getElementById('confirmDuration').textContent = selectedClass.duration;
+        document.getElementById('confirmDistance').textContent = selectedClass.distance;
+        document.getElementById('confirmClass').textContent = selectedClass.classType;
+        document.getElementById('confirmFare').textContent = "₹" + selectedClass.totalFare;
 
-            // Simulate booking process
-            const confirmBtn = document.getElementById('confirmBookingBtn');
-            const originalText = confirmBtn.innerHTML;
-            
-            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            confirmBtn.disabled = true;
+        // Hide search and results
+        document.querySelector('.search-section').style.display = "none";
+        document.getElementById('resultsSection').style.display = "none";
+        document.getElementById('trainConfirmationSection').style.display = "block";
 
-            setTimeout(() => {
-                alert('Booking confirmed! Your PNR is: 1234567890\nBooking details have been sent to your email.');
-                closeBookingModal();
-                
-                // Reset button
-                confirmBtn.innerHTML = originalText;
-                confirmBtn.disabled = false;
-            }, 2000);
-        }
+        const formattedBooking = formatBookingForDashboard("Train", selectedClass);
+        addBookingToDashboard(formattedBooking);
+
+        alert("Train booked successfully!");
+    })
+    .catch(err => {
+        alert("Booking failed. Please try again.");
+        console.error(err);
+    });
+}
+
 
         function loadMoreTrains() {
             // Simulate loading more trains
@@ -1349,6 +1324,26 @@
 
         setupAutoComplete('from');
         setupAutoComplete('to');
+        function addBookingToDashboard(booking) {
+    localStorage.setItem('newBooking', JSON.stringify(booking));
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'newBooking',
+        newValue: JSON.stringify(booking)
+    }));
+}
+
+function formatBookingForDashboard(bookingType, formData) {
+    return {
+        type: bookingType,
+        from: formData.fromName,
+        to: formData.toName,
+        date: new Date().toISOString().split('T')[0],
+        seat: formData.classType,
+        trainNumber: formData.trainNumber,
+        trainName: formData.trainName,
+        price: `₹${formData.totalFare}`
+    };
+}
     </script>
 </body>
 </html>
