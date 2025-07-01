@@ -19,7 +19,7 @@ sns_client = boto3.client('sns', region_name=REGION)
 users_table = dynamodb.Table('travelgo_users')
 bookings_table = dynamodb.Table('bookings')
 
-SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:324037304857:TravelGoapplication:149f125c-a946-4513-af12-3928ca7aec77'
+SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:713881794827:travelgo:302dcf42-b7bd-4797-bbbf-4f00cff92d6a'
 
 # Function to send SNS notifications
 def send_sns_notification(subject, message):
